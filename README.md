@@ -2,13 +2,13 @@
 
 Customizable ChatGPT integration for Foundry VTT.
 
-![Foundry VTT 10](https://img.shields.io/badge/Foundry_VTT-v10-informational?style=flat-square) ![GitHub all releases downloads](https://img.shields.io/github/downloads/vizovitin/foundryvtt-ask-chatgpt/total?label=downloads%40total&style=flat-square) ![GitHub latest release downloads](https://img.shields.io/github/downloads/vizovitin/foundryvtt-ask-chatgpt/latest/total?style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/vizovitin/foundryvtt-ask-chatgpt/ci.yml?label=ci&logo=github&style=flat-square)
+![Foundry VTT 10](https://img.shields.io/badge/Foundry_VTT-v10-informational?style=flat-square) ![GitHub all releases downloads](https://img.shields.io/github/downloads/marccosta12/foundryvtt_askGPT/total?label=downloads%40total&style=flat-square) ![GitHub latest release downloads](https://img.shields.io/github/downloads/marccosta12/foundryvtt_askGPT/latest/total?style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/marccosta12/foundryvtt_askGPT/ci.yml?label=ci&logo=github&style=flat-square)
 
 ## Installation
 
 You can install the module using the following manifest URL:
 
-`https://github.com/vizovitin/foundryvtt-ask-chatgpt/releases/latest/download/module.json`
+`https://github.com/marccosta12/foundryvtt_askGPT/releases/latest/download/module.json`
 
 ## How to use
 
@@ -56,6 +56,10 @@ to use for inspiration and quick generation of various bits of information.
 > from your players.
 
 ## Acknowledgements
+
+**Original Author:** [Nikolay Vizovitin](https://github.com/vizovitin) - Created the original Ask ChatGPT module.
+
+**Maintainer & Enhancements:** [Marc Costa](https://github.com/marccosta12) - Added OpenAI Assistants API support, refactored API client architecture, and ongoing development.
 
 Inspired and partially based on [gpt4-dnd5e](https://github.com/ctbritt/gpt4-dnd5e).
 
