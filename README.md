@@ -1,66 +1,88 @@
-# Ask ChatGPT
+# Ask ChatGPT - Enhanced Edition
 
-Customizable ChatGPT integration for Foundry VTT.
+Bring AI to your Foundry VTT table with powerful OpenAI integration. Whether you prefer simple Chat Completions or sophisticated Assistants with custom knowledge bases, this module adapts to your needs.
 
 ![Foundry VTT 10](https://img.shields.io/badge/Foundry_VTT-v10-informational?style=flat-square) ![GitHub all releases downloads](https://img.shields.io/github/downloads/marccosta12/foundryvtt_askGPT/total?label=downloads%40total&style=flat-square) ![GitHub latest release downloads](https://img.shields.io/github/downloads/marccosta12/foundryvtt_askGPT/latest/total?style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/marccosta12/foundryvtt_askGPT/ci.yml?label=ci&logo=github&style=flat-square)
 
-## Installation
+## Quick Start
 
-You can install the module using the following manifest URL:
+1. **Get your API key** from [OpenAI](https://platform.openai.com/account/api-keys)
+2. **Install the module** using: `https://github.com/marccosta12/foundryvtt_askGPT/releases/latest/download/module.json`
+3. **Configure settings** with your API key and preferred AI engine
+4. **Start asking!** Use `/?` or `/w gpt` in chat
 
-`https://github.com/marccosta12/foundryvtt_askGPT/releases/latest/download/module.json`
+## Usage Examples
 
-## How to use
+### Public Questions (Visible to Everyone)
+```
+/? what's the cost of standing up from prone?
+```
+**Response:** Standing up from prone costs half of your movement speed.
 
-First enter you [OpenAI API key](https://platform.openai.com/account/api-keys) in the module settings.
-Some popular game systems, such as [D&D 5e](https://foundryvtt.com/packages/dnd5e) are automatically
-detected and supported w/o additional customizations. For others you may customize the ChatGPT prompt.
+### Private Whispers (DM & Sender Only)
+```
+/w [gpt, gm] time to don and doff armor
+```
+**Response:** According to the rules in the Player's Handbook, donning and doffing armor takes:
 
-After that simply ask ChatGPT in the Foundry VTT chat!
+| Armor Type   | Donning Time | Doffing Time |
+| ------------ | ------------ | ------------ |
+| Light Armor  | 1 minute     | 1 minute     |
+| Medium Armor | 5 minutes    | 1 minute     |
+| Heavy Armor  | 10 minutes   | 5 minutes    |
+| Shield       | 1 action     | 1 action     |
 
-Ask command `/?` will make the question and reply visible to all:
+## Features
 
-> GM: /? what's the cost of standing up from prone?
+### Two AI Modes
+- **Chat Completions API** - Fast, lightweight, great for quick rules lookups and inspiration
+- **Assistants API** - Powerful, with custom knowledge bases and persistent context (bring your own Assistant ID)
 
-> GPT: Standing up from prone costs half of your movement speed.
+### Game System Support
+Built-in support for D&D 5e, Pathfinder 2e, Ironsworn, and generic systems. Customize prompts for any ruleset.
 
-Whisper command `/w gpt` will make the question and reply visible only to the sender and additional recipients:
+### Context Management
+Maintain conversation history across multiple turns. Adjust context window size to balance memory and token usage.
 
-> Player: /w [gpt, gm] time to don and doff armor
+### Flexible Configuration
+- Choose your AI engine (Chat or Assistants)
+- Select model version (GPT-4 or GPT-3.5)
+- Customize system prompts for your campaign
+- Configure context length for conversation memory
 
-> GPT: According to the rules in the Player's Handbook, donning and doffing armor takes
-> a specific amount of time depending on the type of armor:
->
-> | Armor Type   | Donning Time | Doffing Time |
-> | ------------ | ------------ | ------------ |
-> | Light Armor  | 1 minute     | 1 minute     |
-> | Medium Armor | 5 minutes    | 1 minute     |
-> | Heavy Armor  | 10 minutes   | 5 minutes    |
-> | Shield       | 1 action     | 1 action     |
+## How It Works
 
-## How it works
+The module intercepts `/?` and `/w gpt` commands in Foundry VTT chat and sends them to your chosen OpenAI API. Responses are formatted with proper Markdown support and integrated into your game's chat log.
 
-This module sends questions from the corresponding `/?` and `/w gpt` commands to the ChatGPT
-and (generally) properly formats replies. It is also possible to have multi-message conversations
-with ChatGPT, provided context length is increased in the module settings. Note that ChatGPT is
-not aware of other messages in the chat log, or any other objects in your game.
+Your custom prompts determine how the AI behaves—whether it acts as a knowledgeable GM assistant, rules adjudicator, or creative inspiration engine. The AI understands rulesets for popular game systems but always benefits from additional context in custom prompts.
 
-ChatGPT behavior is primarily governed by a prompt, which by default depends on your game system,
-but may also be overridden in the module settings.
+> **Security Note:** Due to how Foundry VTT modules work, your OpenAI API key is accessible to all players. Use a separate API key or org-level controls if this is a concern. Assistants API users should validate Assistant IDs are appropriate for shared play.
 
-Note that while ChatGPT is aware of several game system rulesets, adventures, items, creatures, and
-so on, it may and will occasionally provide false information. However it's a great tool for DMs
-to use for inspiration and quick generation of various bits of information.
+## Settings Guide
 
-> Note: Due to the way Foundry VTT modules function, your OpenAI API key is not really secret
-> from your players.
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **API Key** | Your OpenAI API key (required) | - |
+| **AI Engine** | Chat Completions or Assistants API | Chat Completions |
+| **Model** | gpt-4 or gpt-3.5-turbo (Chat) / Assistant ID (Assistants) | gpt-3.5-turbo |
+| **Game System** | Auto-detect or choose: dnd5e, pf2e, ironsworn, generic | Auto-detect |
+| **System Prompt** | Custom prompt for AI behavior (optional) | System default |
+| **Context Length** | Number of previous messages to include (0-50) | 5 |
+
+### Using Assistants
+
+Don't have an Assistant? Create one on [OpenAI Platform](https://platform.openai.com/assistants):
+1. Upload your rulebooks, campaign notes, or custom knowledge
+2. Configure instructions for AI behavior
+3. Copy the Assistant ID
+4. Paste it in module settings under "Assistant ID"
+
+That's it! Your Assistant is now available to your party.
 
 ## Acknowledgements
 
-**Original Author:** [Nikolay Vizovitin](https://github.com/vizovitin) - Created the original Ask ChatGPT module.
+**Original Creator:** [Nikolay Vizovitin](https://github.com/vizovitin) - Built the foundation that makes this all possible.
 
-**Maintainer & Enhancements:** [Marc Costa](https://github.com/marccosta12) - Added OpenAI Assistants API support, refactored API client architecture, and ongoing development.
+**Current Maintainer:** [Marc Costa](https://github.com/marccosta12) - Added Assistants API support, refactored architecture, and ongoing development.
 
-Inspired and partially based on [gpt4-dnd5e](https://github.com/ctbritt/gpt4-dnd5e).
-
-Thanks to [OpenAI](https://openai.com) for awesome AI tools.
+Special thanks to [OpenAI](https://openai.com) for incredible AI tools and to the [Foundry VTT](https://foundryvtt.com) community for the amazing platform.
