@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Automatic retries for Assistants API** - Same retry logic as Chat API (5 attempts with exponential backoff)
 - **Comprehensive documentation** - Multiple guides including quick reference, implementation details, and refactoring analysis
 
+- **Correct errors** - Remove unused functions and scripts
+
 ### Changed
 
 - Reorganized API code into cleaner architecture: `api-client.js` for shared utilities
