@@ -71,8 +71,8 @@ async function respondTo(question, users) {
 
 		if (configMode === 'premium') {
 			// PREMIUM MODE
-			const licenseCode = game.settings.get(moduleName, 'licenseCode');
-			const gameSystem = game.settings.get(moduleName, 'gameSystem');
+			//const licenseCode = game.settings.get(moduleName, 'licenseCode');
+			//const gameSystem = game.settings.get(moduleName, 'gameSystem');
 			
 			// TODO: Validate license with backend when ready
 			// const premiumConfig = await validateLicense(licenseCode, gameSystem);
