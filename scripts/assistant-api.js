@@ -166,8 +166,8 @@ async function getLatestMessage(apiKey, threadId) {
  * @throws {Error} - If any step fails
  */
 export async function callAssistantApi(query, assistantId, apiKey) {
-	if (!assistantId) throw new Error('Assistant ID is required');
-	if (!apiKey) throw new Error('API key is required');
+	if (!assistantId || !assistantId.trim()) throw new Error('Assistant ID is required');
+	if (!apiKey || !apiKey.trim()) throw new Error('API key is required');
 
 	const queryMessage = { role: 'user', content: query };
 

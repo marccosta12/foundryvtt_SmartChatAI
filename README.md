@@ -1,4 +1,4 @@
-# Ask ChatGPT - Enhanced Edition
+# Smart Chat AI
 
 Bring AI to your Foundry VTT table with powerful OpenAI integration. Whether you prefer simple Chat Completions or sophisticated Assistants with custom knowledge bases, this module adapts to your needs.
 
@@ -39,7 +39,7 @@ Bring AI to your Foundry VTT table with powerful OpenAI integration. Whether you
 - **Assistants API** - Powerful, with custom knowledge bases and persistent context (bring your own Assistant ID)
 
 ### Game System Support
-Built-in support for D&D 5e, Pathfinder 2e, Ironsworn, and generic systems. Customize prompts for any ruleset.
+Built-in support for D&D 5e, Pathfinder 2e and generic systems. Customize prompts for any ruleset.
 
 ### Context Management
 Maintain conversation history across multiple turns. Adjust context window size to balance memory and token usage.
@@ -49,6 +49,7 @@ Maintain conversation history across multiple turns. Adjust context window size 
 - Select model version (GPT-4 or GPT-3.5)
 - Customize system prompts for your campaign
 - Configure context length for conversation memory
+- Uses your custom OpenAI Assistant
 
 ## How It Works
 
@@ -56,18 +57,31 @@ The module intercepts `/?` and `/w gpt` commands in Foundry VTT chat and sends t
 
 Your custom prompts determine how the AI behaves—whether it acts as a knowledgeable GM assistant, rules adjudicator, or creative inspiration engine. The AI understands rulesets for popular game systems but always benefits from additional context in custom prompts.
 
-> **Security Note:** Due to how Foundry VTT modules work, your OpenAI API key is accessible to all players. Use a separate API key or org-level controls if this is a concern. Assistants API users should validate Assistant IDs are appropriate for shared play.
+> **💡 Security Tip:** Like all Foundry modules, settings are visible to players with console access. For shared games, we recommend creating a dedicated OpenAI API key with spending limits at [OpenAI Dashboard](https://platform.openai.com/settings/organization/limits). This way you can safely share AI features while controlling costs.
 
 ## Settings Guide
 
+### Configuration Mode
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **API Key** | Your OpenAI API key (required) | - |
-| **AI Engine** | Chat Completions or Assistants API | Chat Completions |
-| **Model** | gpt-4 or gpt-3.5-turbo (Chat) / Assistant ID (Assistants) | gpt-3.5-turbo |
-| **Game System** | Auto-detect or choose: dnd5e, pf2e, ironsworn, generic | Auto-detect |
-| **System Prompt** | Custom prompt for AI behavior (optional) | System default |
-| **Context Length** | Number of previous messages to include (0-50) | 5 |
+| **Configuration Mode** | Choose between Personal (use your own OpenAI API) or Premium (managed service - coming soon) | Personal |
+
+### Personal Mode Settings
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **OpenAI API Key** | Your OpenAI API key (required). Generate at [OpenAI Platform](https://platform.openai.com/account/api-keys) | - |
+| **Game System** | Auto-detect or choose: D&D 5e, Pathfinder 2e or Generic | Auto-detect |
+| **Custom Prompt** | Optional. Replaces the Game system prompt to customize AI behavior | System default |
+| **GPT Model Version** | Choose the OpenAI model. Higher versions give better results but cost more | gpt-4o-mini |
+| **Context Length** | Number of recent messages AI remembers (0-50). Per-user, resets on page reload | 5 |
+| **OpenAI Assistant ID** | Advanced. Uses your custom OpenAI Assistant. See [Using Assistants](#using-assistants) below | - |
+
+### Premium Mode Settings (Coming Soon)
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Premium License Code** | Enter your premium license code to unlock managed Assistants | - |
+
+> **Note:** In Premium mode, Assistant configuration is managed automatically. Personal settings (API key, model, custom prompts) are hidden.
 
 ### Using Assistants
 
@@ -81,8 +95,9 @@ That's it! Your Assistant is now available to your party.
 
 ## Acknowledgements
 
-**Original Creator:** [Nikolay Vizovitin](https://github.com/vizovitin) - Built the foundation that makes this all possible.
+**Maintainer:** [Marc Costa](https://github.com/marccosta12) - Added Assistants API support, refactored architecture, and ongoing development.
 
-**Current Maintainer:** [Marc Costa](https://github.com/marccosta12) - Added Assistants API support, refactored architecture, and ongoing development.
-
-Special thanks to [OpenAI](https://openai.com) for incredible AI tools and to the [Foundry VTT](https://foundryvtt.com) community for the amazing platform.
+**Special thanks to:**
+- [Nikolay Vizovitin](https://github.com/vizovitin) - Built the foundation that made this project possible
+- [OpenAI](https://openai.com) - For incredible AI tools
+- [Foundry VTT](https://foundryvtt.com) community - For the amazing platform
