@@ -24,5 +24,11 @@
   "download": "https://github.com/marccosta12/foundryvtt_SmartChatAI/releases/download/v0.4.0/module.zip",
   "changelog": "https://github.com/marccosta12/foundryvtt_SmartChatAI/blob/main/CHANGELOG.md",
   "license": "MIT",
-  "readme": "README.md"
+  "readme": "README.md",
+  "media": [
+    {
+      "type": "icon",
+      "url": "icons/icon.png"
+    }
+  ]
 }
