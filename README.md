@@ -2,6 +2,8 @@
 
 Bring AI to your Foundry VTT table with powerful OpenAI integration. Whether you prefer simple Chat Completions or sophisticated Assistants with custom knowledge bases, this module adapts to your needs.
 
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/F1F41QE2JP)
+
 ![Foundry VTT 10](https://img.shields.io/badge/Foundry_VTT-v10-informational?style=flat-square) ![GitHub all releases downloads](https://img.shields.io/github/downloads/marccosta12/foundryvtt_SmartChatAI/total?label=downloads%40total&style=flat-square) ![GitHub latest release downloads](https://img.shields.io/github/downloads/marccosta12/foundryvtt_SmartChatAI/latest/total?style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/marccosta12/foundryvtt_SmartChatAI/ci.yml?label=ci&logo=github&style=flat-square)
 
 ## Quick Start
@@ -13,16 +15,22 @@ Bring AI to your Foundry VTT table with powerful OpenAI integration. Whether you
 
 ## Usage Examples
 
-### Public Questions (Visible to Everyone)
+### Public Questions - Everyone Sees Everything
+Use `/?` when you want to share the AI response with all players at the table.
+
 ```
 /? what's the cost of standing up from prone?
 ```
+**Visible to:** All players  
 **Response:** Standing up from prone costs half of your movement speed.
 
-### Private Whispers (DM & Sender Only)
+### Private Questions - Only You and GM
+Use `/w gpt` for questions you don't want players to see (plot details, damage calculations, secrets). Only the sender and GM will see both the question and response.
+
 ```
-/w [gpt, gm] time to don and doff armor
+/w gpt time to don and doff armor
 ```
+**Visible to:** Sender + GM  
 **Response:** According to the rules in the Player's Handbook, donning and doffing armor takes:
 
 | Armor Type   | Donning Time | Doffing Time |
@@ -31,6 +39,11 @@ Bring AI to your Foundry VTT table with powerful OpenAI integration. Whether you
 | Medium Armor | 5 minutes    | 1 minute     |
 | Heavy Armor  | 10 minutes   | 5 minutes    |
 | Shield       | 1 action     | 1 action     |
+
+**Include specific players:** You can also whisper to specific players by name:
+```
+/w [gpt, PlayerName] can I counterspell this effect?
+```
 
 ## Features
 
@@ -73,6 +86,14 @@ Your custom prompts determine how the AI behaves—whether it acts as a knowledg
 ### Using Assistants
 
 Don't have an Assistant? Create one on [OpenAI Platform](https://platform.openai.com/assistants):
+
+## Support This Project
+
+If you find Smart Chat AI useful, consider supporting its development:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F41QE2JP)
+
+Your support helps maintain the module and add new features!
 
 ## Acknowledgements
 

@@ -9,7 +9,7 @@ Hooks.once('init', () => {
 
 Hooks.on('chatMessage', (chatLog, message, chatData) => {
 	const echoChatMessage = async (chatData, question) => {
-		const toGptHtml = '<span class="ask-chatgpt-to">To: Smart Chat</span><br>';
+		const toGptHtml = '<span class="smart-chat-to">To: Smart Chat AI</span><br>';
 		chatData.content = `${toGptHtml}${question.replace(/\n/g, "<br>")}`;
 		await ChatMessage.create(chatData);
 	};
@@ -113,8 +113,8 @@ async function respondTo(question, users) {
 		await ChatMessage.create({
 			user: game.user.id,
 			speaker: ChatMessage.getSpeaker({alias: 'GPT'}),
-			content: `<abbr title="${abbr}" class="ask-chatgpt-to fa-solid fa-microchip-ai"></abbr>
-				<span class="ask-chatgpt-reply">${reply}</span>`,
+		content: `<abbr title="${abbr}" class="smart-chat-to fa-solid fa-microchip-ai"></abbr>
+			<span class="smart-chat-reply">${reply}</span>`,
 			whisper: users.map(u => u.id),
 			sound: CONFIG.sounds.notification,
 		});

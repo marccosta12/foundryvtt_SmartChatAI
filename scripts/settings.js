@@ -73,7 +73,7 @@ export const registerSettings = () => {
 
 	game.settings.register(moduleName, 'contextLength', {
 		name: 'Context length',
-		hint: 'Number of recent messages ChatGPT remembers in each request. Higher values improve continuity but increase API cost. Context is per-user and resets when the page reloads.',
+		hint: 'AI memory: 0 = no context, 5 = balanced, 15+ = full conversation. Higher values cost more tokens. Resets on reload.',
 		scope: 'world',
 		config: true,
 		type: Number,

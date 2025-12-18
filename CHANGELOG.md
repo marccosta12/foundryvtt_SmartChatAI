@@ -4,6 +4,25 @@ All notable changes to the project will be documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.4.1] - 2025-12-18
+
+### Changed
+
+- **Branding Consistency** - Updated package name from `foundry-smart-chat` to `smart-chat-ai` in package.json
+- **CSS Class Naming** - Renamed CSS classes from `ask-chatgpt-*` to `smart-chat-*` for consistent branding (affects module.css and module.js)
+- **Improved Documentation** - Enhanced README Usage Examples section with clearer command explanations and visibility indicators
+- **Better UX Guidance** - Improved Context Length setting hint with concise, scannable format showing practical value ranges
+- **Automated Versioning** - Module.json now uses placeholders (#{VERSION}#, #{URL}#, etc.) for automatic updates via GitHub Actions workflow
+
+### Added
+
+- **Ko-fi Support** - Added Ko-fi donation button to README for community support
+- **Enhanced Command Documentation** - Added detailed explanations of public (`/?`) vs private (`/w gpt`) commands with visibility clarifications
+
+### Fixed
+
+- **Chat Message Branding** - Updated chat messages to display "To: Smart Chat AI" instead of "To: Smart Chat" for consistency
+
 ## [0.4.0] - 2025-12-07
 
 ### Added

@@ -1,9 +1,9 @@
-.ask-chatgpt-to {
+.smart-chat-to {
 	color: darkblue;
 	font-size: 0.75rem;
 }
 
-.ask-chatgpt-reply, .ask-chatgpt-reply * {
+.smart-chat-reply, .smart-chat-reply * {
 	-webkit-user-select: text;
 	-ms-user-select: text;
 	user-select: text;

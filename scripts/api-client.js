@@ -15,20 +15,6 @@ const RETRY_CONFIG = {
 };
 
 /**
- * Parse error from API response
- * @param {Response} response - Fetch response
- * @returns {string} - Error message
- */
-/* async function parseErrorMessage(response) {
-	try {
-		const data = await response.json();
-		return data?.error?.message || `HTTP ${response.status}`;
-	} catch {
-		return `HTTP ${response.status}`;
-	}
-} */
-
-/**
  * Make a fetch request with automatic retry logic
  * @param {string} url - API endpoint URL
  * @param {Object} options - Fetch options (method, headers, body)
