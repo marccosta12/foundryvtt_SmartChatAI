@@ -1,48 +1,46 @@
-import { moduleName, getGamePromptSetting } from './settings.js';
-import { pushHistory } from './history.js';
-import { fetchWithRetry, convertToHtml, getAuthHeader } from './api-client.js';
+import { moduleName } from './settings.js';
 
 /**
- * Call OpenAI Chat Completions API
- * Includes automatic retry logic, history management, and error handling
+ * Call Premium Chat API
  * @param {string} query - User query
- * @returns {Promise<string>} - Response text (trimmed)
+ * @returns {Promise<string>} - Response text
  */
 async function callGptApi(query) {
-	const apiKey = game.settings.get(moduleName, 'apiKey');
-	const model = game.settings.get(moduleName, 'modelVersion');
-	const prompt = getGamePromptSetting();
-	const apiUrl = 'https://api.openai.com/v1/chat/completions';
+	const licenseCode = game.settings.get(moduleName, 'premiumLicense');
+	const apiUrl = 'http://localhost:5000/api/chat';
 
-	// Build message objects
-	const promptMessage = { role: 'user', content: prompt };
-	const queryMessage = { role: 'user', content: query };
-	const messages = pushHistory().concat(promptMessage, queryMessage);
-
-	// Build request
 	const requestBody = {
-		model,
-		messages,
-		temperature: 0.1,
+		licenseCode: licenseCode,
+		question: query,
 	};
 
 	const requestOptions = {
 		method: 'POST',
-		headers: getAuthHeader(apiKey),
+		headers: {
+			'Content-Type': 'application/json',
+		},
 		body: JSON.stringify(requestBody),
 	};
 
 	try {
-		// Fetch with automatic retries
-		const data = await fetchWithRetry(apiUrl, requestOptions, 'Chat Completions API');
+		const response = await fetch(apiUrl, requestOptions);
 
-		// Extract response
-		const replyMessage = data.choices[0].message;
-		
-		// Save to history
-		pushHistory(queryMessage, replyMessage);
+		if (!response.ok) {
+			throw new Error(`API HTTP error! status: ${response.status}`);
+		}
 
-		return replyMessage.content.trim();
+		const data = await response.json();
+
+		// Check response status
+		if (data.status === 'error') {
+			throw new Error(data.respons || 'API returned error status');
+		}
+
+		if (data.status !== 'success') {
+			throw new Error(`Unexpected API status: ${data.status}`);
+		}
+
+		return data.respons;
 	} catch (error) {
 		console.error(`${moduleName} | callGptApi failed:`, error);
 		throw error;
@@ -55,6 +53,5 @@ async function callGptApi(query) {
  * @returns {Promise<string>} - Response formatted as HTML
  */
 export async function getGptReplyAsHtml(query) {
-	const answer = await callGptApi(query);
-	return convertToHtml(answer);
+	return await callGptApi(query);
 }
