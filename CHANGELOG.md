@@ -4,6 +4,31 @@ All notable changes to the project will be documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.5.0] - 2026-01-03
+
+### Added
+
+- **Premium Mode** - New premium license system that connects to Smart Chat AI premium service
+- **Premium API Integration** - New `premium-api.js` module for premium service communication via POST requests to `http://localhost:5000/api/chat`
+- **Premium License Setting** - New password-protected setting to configure premium license code
+- **Welcome Message** - First-time user onboarding message explaining commands and premium upgrade options
+- **Smart Fallback System** - Automatic fallback from premium to free mode if premium service fails (when API key is configured)
+- **Loading Indicator for Premium** - Spinner with "Thinking..." message now also displayed for premium API calls
+
+### Changed
+
+- **Priority-Based API Selection** - New logic prioritizes Premium → Assistant API → Chat Completions API
+- **Enhanced Error Handling** - User notifications when premium service fails with automatic fallback to free mode
+- **Improved Settings UI** - Premium license field styled as password input with autocomplete protection
+
+### Technical
+
+- Created `scripts/premium-api.js` with `getPremiumReply()` and `getPremiumReplyAsHtml()` functions
+- Added `premiumLicense` setting in `settings.js` with change tracking
+- Added `welcomeShown` hidden setting to track first-time user experience
+- Refactored `respondTo()` function in `module.js` with three-tier mode priority system
+- Premium API expects JSON: `{licenseCode, question}` and returns: `{status, respons}`
+
 ## [0.4.1] - 2025-12-18
 
 ### Changed

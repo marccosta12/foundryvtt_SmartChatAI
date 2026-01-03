@@ -7,6 +7,40 @@ Hooks.once('init', () => {
 	registerSettings();
 });
 
+Hooks.once('ready', () => {
+	// Show welcome message only once
+	const welcomeShown = game.settings.get(moduleName, 'welcomeShown');
+	if (!welcomeShown && game.user.isGM) {
+		showWelcomeMessage();
+		game.settings.set(moduleName, 'welcomeShown', true);
+	}
+});
+
+function showWelcomeMessage() {
+	const content = `
+		<div style="font-family: sans-serif; line-height: 1.6;">
+			<h2 style="margin-top: 0; color: #4a9eff;">Welcome to Smart Chat AI!</h2>
+			<p><strong>How to use:</strong></p>
+			<ul>
+				<li><strong>/w gpt &lt;question&gt;</strong> - Private whisper to the AI (only you see the response)</li>
+				<li><strong>/? &lt;question&gt;</strong> - Public message (everyone in chat sees the response)</li>
+			</ul>
+			<p><strong>Example:</strong> <code>/w gpt What is a gelatinous cube?</code></p>
+			<hr style="margin: 15px 0; border: none; border-top: 1px solid #ccc;">
+			<p><strong>🚀 Want more features?</strong></p>
+			<p>Upgrade to <strong>Premium</strong> for enhanced AI capabilities, faster responses, and priority support!</p>
+			<p>👉 <a href="https://smartchatai-premium.com" target="_blank" style="color: #4a9eff; text-decoration: underline;">Get Premium License</a></p>
+		</div>
+	`;
+
+	ChatMessage.create({
+		user: game.user.id,
+		content: content,
+		whisper: [game.user.id],
+	});
+}
+
+
 Hooks.on('chatMessage', (chatLog, message, chatData) => {
 	const echoChatMessage = async (chatData, question) => {
 		const toGptHtml = '<span class="smart-chat-to">To: Smart Chat AI</span><br>';
@@ -62,31 +96,22 @@ Hooks.on('chatMessage', (chatLog, message, chatData) => {
 
 async function respondTo(question, users) {
 	console.debug(`${moduleName} | respondTo(question = "${question}", users =`, users, ')');
+	let spinnerMessageId = null;
+	
 	try {
-		// Declare variables in upper scope
-		let apiKey;
-		let assistantId;
-
-		// PERSONAL MODE (current logic)
-		apiKey = game.settings.get(moduleName, 'apiKey');
-		assistantId = game.settings.get(moduleName, 'assistantId');
-		
-		// Validate that API key is configured
-		if (!apiKey || !apiKey.trim()) {
-			ui.notifications.error('Please configure your OpenAI API key in module settings');
-			return;
-		}
-		
+		// Get configuration
+		const premiumLicense = game.settings.get(moduleName, 'premiumLicense');
+		const apiKey = game.settings.get(moduleName, 'apiKey');
+		const assistantId = game.settings.get(moduleName, 'assistantId');
 
 		let reply;
-		let spinnerMessageId = null;
+		let usedPremium = false;
 
-		// Unified logic for both modes
-		if (assistantId && assistantId.trim()) {
-			// Use Assistant API (Personal with own Assistant ID OR Premium)
-			console.debug(`${moduleName} | Using Assistant API with ID: ${assistantId}`);
+		// Priority 1: Try Premium Mode if license is configured
+		if (premiumLicense && premiumLicense.trim()) {
+			console.debug(`${moduleName} | Using Premium Mode`);
 			
-			// Show spinner for Assistants API
+			// Show spinner for Premium API
 			const spinnerMessage = await ChatMessage.create({
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({alias: 'GPT'}),
@@ -95,20 +120,67 @@ async function respondTo(question, users) {
 			});
 			spinnerMessageId = spinnerMessage.id;
 			
-			const { getAssistantReplyAsHtml } = await import('./assistant-api.js');
-			reply = await getAssistantReplyAsHtml(question, assistantId, apiKey);
-		} else {
-			// Use Chat Completions API
-			console.debug(`${moduleName} | Using Chat Completions API`);
-			reply = await getGptReplyAsHtml(question);
+			try {
+				const { getPremiumReplyAsHtml } = await import('./premium-api.js');
+				reply = await getPremiumReplyAsHtml(question, premiumLicense.trim());
+				usedPremium = true;
+			} catch (premiumError) {
+				console.warn(`${moduleName} | Premium API failed:`, premiumError);
+				
+				// Fallback to free mode if API key is available
+				if (apiKey && apiKey.trim()) {
+					ui.notifications.warn(
+						`Premium service unavailable: ${premiumError.message}. Using free mode instead.`,
+						{permanent: false}
+					);
+					
+					// Continue to free mode logic below
+					console.debug(`${moduleName} | Falling back to Free Mode`);
+				} else {
+					// No API key available for fallback
+					throw new Error(`Premium service failed and no API key configured for fallback. Error: ${premiumError.message}`);
+				}
+			}
 		}
 
-		// Remove spinner if it was shown
+		// Priority 2 & 3: Free Mode (if premium wasn't used or failed with fallback)
+		if (!usedPremium) {
+			// Validate that API key is configured
+			if (!apiKey || !apiKey.trim()) {
+				ui.notifications.error('Please configure your OpenAI API key or Premium license in module settings');
+				return;
+			}
+			
+			// If spinner wasn't created yet (direct free mode), create it now
+			if (!spinnerMessageId) {
+				const spinnerMessage = await ChatMessage.create({
+					user: game.user.id,
+					speaker: ChatMessage.getSpeaker({alias: 'GPT'}),
+					content: '<i class="fas fa-spinner fa-spin"></i> Thinking...',
+					whisper: users.map(u => u.id),
+				});
+				spinnerMessageId = spinnerMessage.id;
+			}
+
+			if (assistantId && assistantId.trim()) {
+				// Use Assistant API
+				console.debug(`${moduleName} | Using Assistant API with ID: ${assistantId}`);
+				const { getAssistantReplyAsHtml } = await import('./assistant-api.js');
+				reply = await getAssistantReplyAsHtml(question, assistantId, apiKey);
+			} else {
+				// Use Chat Completions API
+				console.debug(`${moduleName} | Using Chat Completions API`);
+				reply = await getGptReplyAsHtml(question);
+			}
+		}
+
+		// Remove spinner
 		if (spinnerMessageId) {
 			const spinnerMsg = game.messages.get(spinnerMessageId);
 			if (spinnerMsg) await spinnerMsg.delete();
 		}
 
+		// Send final response
 		const abbr = "By ChatGPT. Statements may be false";
 		await ChatMessage.create({
 			user: game.user.id,

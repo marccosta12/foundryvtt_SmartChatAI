@@ -99,13 +99,48 @@ export const registerSettings = () => {
 
 	// <<< PERSONAL MODE SETTINGS
 
-	// Hook to make API key a password field
+	// PREMIUM MODE SETTINGS >>>
+
+	game.settings.register(moduleName, 'premiumLicense', {
+		name: 'Premium License Code',
+		hint: 'Optional. Enter your premium license to use the Smart Chat AI premium service. Get your license at https://smartchatai-premium.com',
+		scope: 'world',
+		config: true,
+		type: String,
+		default: '',
+		onChange: (code) => {
+			if (code && code.trim()) {
+				console.log(`${moduleName} | Premium license configured. Premium mode enabled.`);
+			} else {
+				console.log(`${moduleName} | Premium license cleared. Using free mode.`);
+			}
+		},
+	});
+
+	// <<< PREMIUM MODE SETTINGS
+
+	// Hidden setting to track if welcome message has been shown
+	game.settings.register(moduleName, 'welcomeShown', {
+		scope: 'world',
+		config: false,
+		type: Boolean,
+		default: false,
+	});
+
+	// Hook to make API key and license password fields
 	Hooks.on('renderSettingsConfig', (_settingsConfig, element, _data) => {
 		// Make API key input a password field
 		let apiKeyInput = element.find(`input[name='${moduleName}.apiKey']`)[0];
 		if (apiKeyInput) {
 			apiKeyInput.type = 'password';
 			apiKeyInput.autocomplete = 'one-time-code';
+		}
+		
+		// Make premium license input a password field
+		let licenseInput = element.find(`input[name='${moduleName}.premiumLicense']`)[0];
+		if (licenseInput) {
+			licenseInput.type = 'password';
+			licenseInput.autocomplete = 'one-time-code';
 		}
 	});
 }

@@ -1,6 +1,6 @@
 {
   "name": "smart-chat-ai",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Smart Chat AI - AI assistant for Foundry VTT with OpenAI integration and Assistants API support",
   "repository": "https://github.com/marccosta12/foundryvtt_SmartChatAI",
   "author": "Marc Costa",
