@@ -1,18 +1,23 @@
 import { registerSettings, moduleName } from './settings.js';
 import { getGptReplyAsHtml } from './gpt-api.js';
 
+// Track users who have already seen the welcome message in this session
+// Resets when Foundry is closed and reopened
+const usersWhoSawWelcome = new Set();
 
 Hooks.once('init', () => {
 	console.log(`${moduleName} | Initialization`);
 	registerSettings();
 });
 
-Hooks.once('ready', () => {
-	// Show welcome message only once
-	const welcomeShown = game.settings.get(moduleName, 'welcomeShown');
-	if (!welcomeShown && game.user.isGM) {
+Hooks.on('ready', () => {
+	// Show welcome message once per user per session
+	const userId = game.user.id;
+	
+	if (!usersWhoSawWelcome.has(userId)) {
 		showWelcomeMessage();
-		game.settings.set(moduleName, 'welcomeShown', true);
+		usersWhoSawWelcome.add(userId);
+		console.log(`${moduleName} | Welcome message shown to user ${game.user.name}`);
 	}
 });
 

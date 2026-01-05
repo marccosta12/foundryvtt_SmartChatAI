@@ -119,14 +119,6 @@ export const registerSettings = () => {
 
 	// <<< PREMIUM MODE SETTINGS
 
-	// Hidden setting to track if welcome message has been shown
-	game.settings.register(moduleName, 'welcomeShown', {
-		scope: 'world',
-		config: false,
-		type: Boolean,
-		default: false,
-	});
-
 	// Hook to make API key and license password fields
 	Hooks.on('renderSettingsConfig', (_settingsConfig, element, _data) => {
 		// Make API key input a password field
