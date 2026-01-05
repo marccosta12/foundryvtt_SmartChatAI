@@ -1,46 +1,60 @@
 import { moduleName } from './settings.js';
+import { pushHistory } from './history.js';
+import { fetchWithRetry, convertToHtml, getAuthHeader } from './api-client.js';
 
 /**
- * Call Premium Chat API
+ * Call OpenAI Chat Completions API
  * @param {string} query - User query
  * @returns {Promise<string>} - Response text
  */
 async function callGptApi(query) {
-	const licenseCode = game.settings.get(moduleName, 'premiumLicense');
-	const apiUrl = 'http://localhost:5000/api/chat';
+	const apiKey = game.settings.get(moduleName, 'apiKey');
+	const modelVersion = game.settings.get(moduleName, 'modelVersion');
+	const gamePrompt = game.settings.get(moduleName, 'gamePrompt');
+	const contextLength = game.settings.get(moduleName, 'contextLength');
+
+	// Build messages array with system prompt and history
+	const messages = [
+		{ role: 'system', content: gamePrompt }
+	];
+
+	// Add conversation history if context length > 0
+	if (contextLength > 0) {
+		const history = game.settings.get(moduleName, 'history') || [];
+		const recentHistory = history.slice(-contextLength);
+		messages.push(...recentHistory);
+	}
+
+	// Add current user query
+	messages.push({ role: 'user', content: query });
+
+	const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
 	const requestBody = {
-		licenseCode: licenseCode,
-		question: query,
+		model: modelVersion,
+		messages: messages,
+		temperature: 0.7,
 	};
 
 	const requestOptions = {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers: getAuthHeader(apiKey),
 		body: JSON.stringify(requestBody),
 	};
 
 	try {
-		const response = await fetch(apiUrl, requestOptions);
+		const data = await fetchWithRetry(apiUrl, requestOptions, 'ChatCompletions');
 
-		if (!response.ok) {
-			throw new Error(`API HTTP error! status: ${response.status}`);
+		if (!data.choices || data.choices.length === 0) {
+			throw new Error('No response from OpenAI API');
 		}
 
-		const data = await response.json();
+		const reply = data.choices[0].message.content;
 
-		// Check response status
-		if (data.status === 'error') {
-			throw new Error(data.respons || 'API returned error status');
-		}
+		// Save to history
+		pushHistory(query, reply);
 
-		if (data.status !== 'success') {
-			throw new Error(`Unexpected API status: ${data.status}`);
-		}
-
-		return data.respons;
+		return reply;
 	} catch (error) {
 		console.error(`${moduleName} | callGptApi failed:`, error);
 		throw error;
@@ -48,10 +62,11 @@ async function callGptApi(query) {
 }
 
 /**
- * Get response from Chat API formatted as HTML
+ * Get response from Chat Completions API formatted as HTML
  * @param {string} query - User query
  * @returns {Promise<string>} - Response formatted as HTML
  */
 export async function getGptReplyAsHtml(query) {
-	return await callGptApi(query);
+	const reply = await callGptApi(query);
+	return convertToHtml(reply);
 }

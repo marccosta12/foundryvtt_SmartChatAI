@@ -141,6 +141,7 @@ async function respondTo(question, users) {
 					
 					// Continue to free mode logic below
 					console.debug(`${moduleName} | Falling back to Free Mode`);
+					// usedPremium remains false, will continue to free mode
 				} else {
 					// No API key available for fallback
 					throw new Error(`Premium service failed and no API key configured for fallback. Error: ${premiumError.message}`);
@@ -167,13 +168,24 @@ async function respondTo(question, users) {
 				spinnerMessageId = spinnerMessage.id;
 			}
 
+			// Try Assistant API first if configured
 			if (assistantId && assistantId.trim()) {
-				// Use Assistant API
 				console.debug(`${moduleName} | Using Assistant API with ID: ${assistantId}`);
-				const { getAssistantReplyAsHtml } = await import('./assistant-api.js');
-				reply = await getAssistantReplyAsHtml(question, assistantId, apiKey);
+				try {
+					const { getAssistantReplyAsHtml } = await import('./assistant-api.js');
+					reply = await getAssistantReplyAsHtml(question, assistantId, apiKey);
+				} catch (assistantError) {
+					console.warn(`${moduleName} | Assistant API failed:`, assistantError);
+					ui.notifications.warn(
+						`Assistant API unavailable: ${assistantError.message}. Using Chat Completions API instead.`,
+						{permanent: false}
+					);
+					// Fallback to Chat Completions
+					console.debug(`${moduleName} | Falling back to Chat Completions API`);
+					reply = await getGptReplyAsHtml(question);
+				}
 			} else {
-				// Use Chat Completions API
+				// Use Chat Completions API directly
 				console.debug(`${moduleName} | Using Chat Completions API`);
 				reply = await getGptReplyAsHtml(question);
 			}
